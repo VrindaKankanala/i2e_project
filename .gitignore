@@ -1,0 +1,21 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Environment variables (API keys — never commit)
+.env
+
+# Generated data (large files, rebuilt by scripts)
+data/chroma_db/
+data/bm25/
+data/chunks/
+
+# PDF source document (large binary)
+*.pdf
