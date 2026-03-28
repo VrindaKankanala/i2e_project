@@ -325,24 +325,39 @@ st.set_page_config(
 
 # Sidebar
 with st.sidebar:
-    st.title("🚀 NASA SE Handbook")
-    st.caption("SP-2016-6105 Rev2 — 270 pages, 17 chapters")
-    st.markdown("---")
-
-    st.markdown("**Knowledge base**")
-    st.markdown("- 483 text + 23 tables + 30 figures + 31 boxes")
-    st.markdown("- Hybrid search (semantic + BM25)")
-    st.markdown("- Cross-reference following")
-    st.markdown("- Citations with page numbers")
+    st.image("https://www.nasa.gov/wp-content/uploads/2023/04/nasa-logo-web-rgb.png", width=80)
+    st.markdown("## NASA SE Handbook QA")
+    st.caption("SP-2016-6105 Rev2 · 270 pages · 17 chapters")
 
     st.markdown("---")
-    st.markdown("**Try a sample question:**")
+
+    st.markdown("#### 🗄️ Knowledge Base")
+    col_a, col_b = st.columns(2)
+    col_a.metric("📄 Text", "483")
+    col_b.metric("📊 Tables", "23")
+    col_a.metric("🖼️ Figures", "30")
+    col_b.metric("📦 Boxes", "31")
+    st.caption("567 total chunks · hybrid search (semantic + BM25)")
+
+    st.markdown("---")
+
+    st.markdown("#### ⚙️ Retrieval")
+    st.markdown("""
+- 🔀 Reciprocal Rank Fusion
+- 🔗 Cross-reference following
+- 📌 Page-level citations
+- 🧠 GPT-4o-mini generation
+""")
+
+    st.markdown("---")
+
+    st.markdown("#### 💡 Sample Questions")
     for q in SAMPLE_QUESTIONS:
         if st.button(q, key=f"sample_{q}", use_container_width=True):
             st.session_state.pending_question = q
 
     st.markdown("---")
-    if st.button("Clear chat", use_container_width=True):
+    if st.button("🗑️ Clear chat", use_container_width=True):
         st.session_state.messages = []
         st.rerun()
 

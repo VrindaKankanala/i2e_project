@@ -51,6 +51,7 @@ Rules:
 - Do not invent information not present in the sources.
 - Keep answers concise but complete.
 - Use technical terminology as it appears in the handbook.
+- Bold key technical terms, process names, acronyms, and important concepts using **markdown bold**.
 - If a source contains a cross-reference to another section, note it but do not speculate about that section's content unless it was also provided."""
 
 
