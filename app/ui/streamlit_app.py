@@ -292,7 +292,15 @@ def render_answer(response: QAResponse, retrieval_results: list) -> None:
 
                 else:
                     text = chunk.get("text", "")
-                    st.text(text[:800] + ("..." if len(text) > 800 else ""))
+                    # Filter out garbled diagram-label lines (bullet-separated with no spaces)
+                    clean_lines = [
+                        l for l in text.split("\n")
+                        if not (l.count("•") >= 2 and " " not in l.replace("•", "").strip())
+                        and not l.strip().isdigit()
+                        and not l.strip().startswith("FIGURE ")
+                    ]
+                    clean_text = "\n".join(clean_lines).strip()
+                    st.markdown(clean_text[:800] + ("..." if len(clean_text) > 800 else ""))
 
     # Retrieval details expander
     with st.expander("Retrieval details", expanded=False):

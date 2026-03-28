@@ -76,6 +76,27 @@ def _estimate_tokens(text: str) -> int:
     return max(1, len(text) // 4)
 
 
+def _is_diagram_label_block(text: str) -> bool:
+    """
+    Return True for text blocks that are diagram labels from raster figures
+    (images, not vector drawings) — these can't be caught by get_diagram_rects().
+
+    Signals:
+    - Multiple bullet chars (•) with no spaces between items
+      e.g. "•Stakeholders•Risks•ConfigurationManagement•DataManagement"
+    - Text is just a standalone page number (single digit or short number)
+    - Lines like "FIGURE X.Y-Z  Title" that are figure captions embedded in text
+    """
+    t = text.strip()
+    # Bullet-concatenated labels: 2+ bullets with no spaces between them
+    if t.count("•") >= 2 and " " not in t.replace("•", "").strip():
+        return True
+    # Standalone page numbers
+    if re.fullmatch(r"\d{1,3}", t):
+        return True
+    return False
+
+
 def _block_in_box(block_bbox: tuple, box_rect) -> bool:
     """
     Return True if the text block's center point falls inside the box rect.
@@ -279,6 +300,9 @@ def build_chunks(
             if _diagram_rects and b.page in _diagram_rects:
                 if _block_in_box(b.bbox, _diagram_rects[b.page]):
                     continue
+            # Skip diagram label blocks from raster figures
+            if _is_diagram_label_block(b.text):
+                continue
             cleaned = _clean_block_text(b.text)
             if cleaned:
                 raw_texts.append(cleaned)
