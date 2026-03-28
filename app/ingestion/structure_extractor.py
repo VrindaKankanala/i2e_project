@@ -122,9 +122,22 @@ def _get_page_height(blocks: list[TextBlock], page: int) -> float:
 
 
 def _clean_title(raw: str) -> str:
-    """Strip control chars and normalise whitespace in a title string."""
-    cleaned = re.sub(r"[\x00-\x1f]", " ", raw)  # remove control chars
+    """Strip control chars and normalise whitespace in a title string.
+
+    Also handles the case where the PDF block has the section title run
+    directly into body text with no separator, e.g.:
+      "TestDefines what this method means..."
+      "Qualification TestingThis section describes..."
+    We split at the first lowercase→uppercase direct boundary (no space between)
+    to recover just the title words.
+    """
+    cleaned = re.sub(r"[\x00-\x1f\xad]", " ", raw)  # remove control chars + soft-hyphen
     cleaned = re.sub(r"\s+", " ", cleaned).strip()
+    # Split at camelCase boundary: lowercase char immediately followed by uppercase+lowercase
+    # e.g. "TestDefines" → "Test" | "Qualification TestingThis" → "Qualification Testing"
+    m = re.search(r"(?<=[a-z])(?=[A-Z][a-z])", cleaned)
+    if m:
+        cleaned = cleaned[: m.start()].rstrip()
     return cleaned
 
 
